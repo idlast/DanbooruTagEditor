@@ -1,0 +1,13 @@
+﻿<Window Loaded="Window_Loaded" x:Class="DanbooruTagEditor.TranslateFixWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="翻訳修正" 
+        WindowStyle="ToolWindow"
+        WindowStartupLocation="CenterOwner"
+        Height="120" Width="300" >
+    <Grid Margin="10">
+        <TextBox x:Name="TranslationTextBox"
+                 VerticalAlignment="Center" 
+                 KeyDown="TranslationTextBox_KeyDown" />
+    </Grid>
+</Window>

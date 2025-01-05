@@ -1,0 +1,15 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DanbooruTagEditor" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="translateCsvPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">S:\VisualStudioProjects\DanbooruTagEditor\DanbooruTagEditor\csv\translateMap.csv</Value>
+    </Setting>
+    <Setting Name="categoryColorMapJsonPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">S:\VisualStudioProjects\DanbooruTagEditor\DanbooruTagEditor\json\categoryColorMap.json</Value>
+    </Setting>
+    <Setting Name="tagCategoryMapJsonPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">S:\VisualStudioProjects\DanbooruTagEditor\DanbooruTagEditor\json\tagCategoryMap.json</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

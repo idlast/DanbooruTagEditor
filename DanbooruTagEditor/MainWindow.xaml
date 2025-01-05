@@ -5,8 +5,351 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DanbooruTagEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="850" Width="1345">
 
+    <!-- ここでリソース定義 -->
+    <Window.Resources>
+
+        <!-- 
+            1) メイン機能ボタンのスタイル
+               グラデーション背景＋ホバー時の色変化などを盛り込みます 
+        -->
+        <!-- ContextMenu用のスタイル -->
+        <Style TargetType="ContextMenu" x:Key="FancyContextMenuStyle">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="#FFF8F8FF"/>
+            <Setter Property="BorderBrush" Value="#FFAAAACC"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <!-- ほかいろいろ自由に設定できます -->
+        </Style>
+        <!-- MenuItem用のスタイル -->
+        <Style TargetType="MenuItem" x:Key="FancyMenuItemStyle">
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border x:Name="border"
+                            CornerRadius="8"
+                            Background="#FFF0F0F0">
+                                            <ContentPresenter
+                            Content="{TemplateBinding Header}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="border" 
+                                Property="Background" 
+                                Value="#FFCCAACC"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" 
+                                Property="Background"
+                                Value="#FFE8E8E8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="MyFancyButtonStyle" TargetType="Button">
+            <!-- 共通の見た目 -->
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <!-- 角を少し丸める -->
+            <!--<Setter Property="BorderCornerRadius" Value="4"/>-->
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FF8F62FD" Offset="0.0" />
+                        <GradientStop Color="#FF6A48F9" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+
+            <!-- ホバーや押下時などの視覚変化をTriggerで設定 -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                        CornerRadius="4"
+                            Background="{TemplateBinding Background}">
+                            <ContentPresenter 
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" />
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <!-- マウスオーバー時 -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#FF9D77FE" Offset="0.0" />
+                                            <GradientStop Color="#FF8356F8" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+
+                            <!-- 押下時 -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush Color="#FF5C38BE" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+
+                            <!-- 無効化 (IsEnabled=False) 時 -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#FFBFBFBF" />
+                                <Setter Property="Foreground" Value="#FF7E7E7E"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <!-- 
+            2) タグボタンのスタイル
+               こちらはコンパクトでシンプルなデザイン＋ホバー演出。
+               もちろん同じスタイルでOKですが、別にしてみます！ 
+        -->
+        <Style x:Key="TagButtonStyle" TargetType="Button">
+            <!-- 高さだけ固定 -->
+            <Setter Property="Height" Value="30"/>
+
+            <!-- 文字まわりの余白。左右を広めにしたいなら (15,2) や (12,2) などお好みで！ -->
+            <Setter Property="Padding" Value="12,2"/>
+
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#FF6A48F9"/>
+
+            <!-- フォントサイズの例(後述) -->
+            <Setter Property="FontSize" Value="14"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="tagBorder"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="4">
+                            <ContentPresenter 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <!-- カラム定義（左2*, 右3*） -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- 左側 -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+
+            <!-- (1) ユーティリティエリア -->
+            <Border x:Name="UtilityAreaBorder"
+                Grid.Row="0"
+                BorderBrush="DarkGray" BorderThickness="1" 
+                Background="#FFEFEF"
+                Padding="8">
+
+                <!-- 
+                ここで上下2行、下段が左右2列、合わせて3分割にする
+                Row 0 -> 上段(フォルダ選択,マーク,ファイル名)
+                Row 1 -> 下段 → さらに2カラム(左=検索,右=追加)
+            -->
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!-- ◇◇ 上段 (フォルダ選択, マーク, 選択ファイル名) ◇◇ -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0">
+                        <!-- フォルダを選択ボタン (スタイル適用) -->
+                        <Button Content="フォルダを選択"
+                            Style="{StaticResource MyFancyButtonStyle}"
+                            Width="100" Height="30"
+                            Margin="5"
+                            Click="SelectFolderButton_Click" />
+
+                        <!-- マークボタン (スタイル適用) -->
+                        <Button x:Name="MarkButton"
+                            Content="マーク"
+                            Style="{StaticResource MyFancyButtonStyle}"
+                            Width="60" Height="30"
+                            Margin="5"
+                            Click="MarkButton_Click" />
+
+                        <!-- 選択中ファイル名 -->
+                        <TextBlock x:Name="SelectedFileNameTextBlock"
+                               Margin="8,0,0,0"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               FontWeight="Bold"
+                               Text="(未選択)" />
+
+                        <!-- 言語切り替えボタン -->
+                        <Button x:Name="LanguageButton"
+                            Content="切り替え"
+                            Width="80"
+                            Height="30"
+                            Margin="80,5"
+                            Click="LanguageButton_Click"
+                            Style="{StaticResource MyFancyButtonStyle}" />
+                    </StackPanel>
+
+                    <!-- ◇◇ 下段 (2カラム: 左=検索, 右=追加) ◇◇ -->
+                    <Grid Grid.Row="1" Margin="5,10,5,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- 下-左: 検索UI -->
+                        <Border Grid.Column="0"
+                        Margin="5"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        Background="#FFF9F9">
+                        <StackPanel Orientation="Vertical" Margin="5,10">
+                            <TextBox x:Name="SearchTextBox1"
+                                Width="200" Height="25"
+                                Margin="0,0,0,5"/>
+                                <TextBox x:Name="SearchTextBox2"
+                                Width="200" Height="25"
+                                Margin="0,0,0,5"/>
+                                <TextBox x:Name="SearchTextBox3"
+                                Width="200" Height="25"
+                                Margin="0,0,0,5"/>
+                                <TextBox x:Name="SearchTextBox4"
+                                Width="200" Height="25"
+                                Margin="0,0,0,5"/>
+                                <Button Content="絞り込み"
+                            Width="80" Height="25"
+                            Style="{StaticResource MyFancyButtonStyle}"
+                            Click="SearchButton_Click"
+                            HorizontalAlignment="Right" />
+                        </StackPanel>           
+                        </Border>
+
+                        <!-- 下-右: タグ追加UI -->
+                        <Border Grid.Column="1"
+                        Margin="5"
+                        BorderBrush="Gray"
+                        BorderThickness="1"
+                        Background="#FFFDF0">
+                            <StackPanel Orientation="Vertical" Margin="10">
+
+                                <!-- ▼▼ 1つ目の入力欄＋ボタン ▼▼ -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBox x:Name="TagAddTextBox1" Width="170" Height="25" Margin="0,0,5,0"/>
+                                    <Button x:Name="TagAddButton1"
+                                    Content="追加"
+                                    Width="45" Height="25"
+                                    Style="{StaticResource MyFancyButtonStyle}"
+                                    Click="TagAddButton_Click1"/>       
+                                </StackPanel>
+
+                                <!-- ▼▼ 2つ目 ▼▼ -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBox x:Name="TagAddTextBox2" Width="170" Height="25" Margin="0,0,5,0"/>
+                                    <Button x:Name="TagAddButton2"
+                                    Content="追加"
+                                    Width="45" Height="25"
+                                    Style="{StaticResource MyFancyButtonStyle}"
+                                    Click="TagAddButton_Click2"/>
+                                </StackPanel>
+
+                                <!-- ▼▼ 3つ目 ▼▼ -->
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                                    <TextBox x:Name="TagAddTextBox3" Width="170" Height="25" Margin="0,0,5,0"/>
+                                    <Button x:Name="TagAddButton3"
+                                    Content="追加"
+                                    Width="45" Height="25"
+                                    Style="{StaticResource MyFancyButtonStyle}"
+                                    Click="TagAddButton_Click3"/>
+                                </StackPanel>
+
+                                <!-- ▼▼ 4つ目 ▼▼ -->
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox x:Name="TagAddTextBox4" Width="170" Height="25" Margin="0,0,5,0"/>
+                                    <Button x:Name="TagAddButton4"
+                                    Content="追加"
+                                    Width="45" Height="25"
+                                    Style="{StaticResource MyFancyButtonStyle}"
+                                    Click="TagAddButton_Click4"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                    </Grid>
+                </Grid>
+            </Border>
+
+
+            <!-- (2) サムネイルエリア -->
+            <Border Grid.Row="1" Margin="0" BorderBrush="DarkGray" BorderThickness="1" Background="#EEF4FF">
+                <!-- スクロールさせたい場合はScrollViewer + WrapPanelなどにするのがおすすめ -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <UniformGrid x:Name="ThumbnailUniformGrid" Columns="4" />
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- 右側 -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="4*" />
+            </Grid.RowDefinitions>
+
+            <!-- (3) 選択画像表示エリア -->
+            <Border Grid.Row="0" Margin="0" BorderBrush="DarkGray" BorderThickness="1" Background="#FFF9EE">
+                <Image x:Name="PreviewImage"
+           Stretch="Uniform" />
+            </Border>
+
+            <!-- (4) タグエリア -->
+            <Border Grid.Row="1"
+            Margin="0"
+            BorderBrush="DarkGray"
+            BorderThickness="1"
+            Background="#FFEFFF">
+
+                <!-- スクロールできるようにする -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <!-- 横にタグを並べていき、横が埋まったら折り返すイメージ -->
+                    <WrapPanel x:Name="TagAreaPanel" Orientation="Horizontal"
+                   Margin="5" />
+                </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
