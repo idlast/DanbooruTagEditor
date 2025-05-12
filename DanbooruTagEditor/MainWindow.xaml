@@ -56,6 +56,47 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <!-- 下線だけのTextBoxスタイル -->
+        <Style x:Key="UnderlinedTextBoxStyle" TargetType="TextBox">
+            <!-- 背景透過、枠線なし -->
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <!-- 文字色をお好みで -->
+
+            <Setter Property="FontSize" Value="{DynamicResource MyTextBoxFontSize}" />
+
+            <!-- カスタムテンプレートで「底線」だけ引く -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <!-- 下線としてのBorder -->
+                            <Border x:Name="Underline"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="Gray"
+                                    BorderThickness="0,0,0,1"
+                                    SnapsToDevicePixels="True">
+                                <!-- PART_ContentHost がTextBoxの文字描画領域になる -->
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                              Margin="0"
+                                              VerticalScrollBarVisibility="Hidden"
+                                              HorizontalScrollBarVisibility="Hidden"/>
+                            </Border>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <!-- フォーカス時に下線を強調する例 -->
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="Underline" Property="BorderBrush" Value="Blue"/>
+                                <Setter TargetName="Underline" Property="BorderThickness" Value="0,0,0,2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="MyFancyButtonStyle" TargetType="Button">
             <!-- 共通の見た目 -->
             <Setter Property="Foreground" Value="White"/>
@@ -220,9 +261,26 @@
                             Content="切り替え"
                             Width="80"
                             Height="30"
-                            Margin="80,5"
+                            Margin="80,10,10,10"
                             Click="LanguageButton_Click"
                             Style="{StaticResource MyFancyButtonStyle}" />
+
+                        <Button x:Name="UndoButton"
+                            Content="元に戻す"
+                            Width="80" Height="30"
+                            Margin="5,10,10,10"
+                            Click="UndoButton_Click"
+                            Style="{StaticResource MyFancyButtonStyle}"
+                            IsEnabled="False" />
+                        
+                        <!-- 設定ボタン -->
+                        <!--<Button x:Name="ConfigButton"
+                            Content="設定"
+                            Width="80"
+                            Height="30"
+                            Margin="0,5"
+                            Click="ConfigButton_Click"
+                            Style="{StaticResource MyFancyButtonStyle}" />-->  
                     </StackPanel>
 
                     <!-- ◇◇ 下段 (2カラム: 左=検索, 右=追加) ◇◇ -->
@@ -239,18 +297,83 @@
                         BorderThickness="1"
                         Background="#FFF9F9">
                         <StackPanel Orientation="Vertical" Margin="5,10">
-                            <TextBox x:Name="SearchTextBox1"
-                                Width="200" Height="25"
-                                Margin="0,0,0,5"/>
-                                <TextBox x:Name="SearchTextBox2"
-                                Width="200" Height="25"
-                                Margin="0,0,0,5"/>
-                                <TextBox x:Name="SearchTextBox3"
-                                Width="200" Height="25"
-                                Margin="0,0,0,5"/>
-                                <TextBox x:Name="SearchTextBox4"
-                                Width="200" Height="25"
-                                Margin="0,0,0,5"/>
+                                <!-- 1つのGridでTextBoxとButtonを重ねて配置する -->
+                                <Grid Width="200" Height="30" Margin="0,0,0,5">
+                                    <!-- テキストボックス -->
+                                    <TextBox x:Name="SearchTextBox1"
+                                     Style="{StaticResource UnderlinedTextBoxStyle}"
+                                     VerticalAlignment="Center"
+                                     Width="200"
+                                     Margin="0,0,0,0"/>
+                                    <!-- クリアボタン -->
+                                    <Button x:Name="ClearSearch1"
+                                    Width="20" Height="20"
+                                    Content="X"
+                                    Background="Red"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,0,0"
+                                    Click="ClearSearch1_Click" />
+                                </Grid>
+                                <Grid Width="200" Height="30" Margin="0,0,0,5">
+                                    <!-- テキストボックス -->
+                                    <TextBox x:Name="SearchTextBox2"
+                                     Style="{StaticResource UnderlinedTextBoxStyle}"
+                                     VerticalAlignment="Center"
+                                     Width="200"
+                                     Margin="0,0,0,0"/>
+                                    <!-- クリアボタン -->
+                                    <Button x:Name="ClearSearch2"
+                                    Width="20" Height="20"
+                                    Content="X"
+                                    Background="Red"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,0,0"
+                                    Click="ClearSearch1_Click" />
+                                </Grid>
+                                <Grid Width="200" Height="30" Margin="0,0,0,5">
+                                    <!-- テキストボックス -->
+                                    <TextBox x:Name="SearchTextBox3"
+                                     Style="{StaticResource UnderlinedTextBoxStyle}"
+                                     VerticalAlignment="Center"
+                                     Width="200"
+                                     Margin="0,0,0,0"/>
+                                    <!-- クリアボタン -->
+                                    <Button x:Name="ClearSearch3"
+                                    Width="20" Height="20"
+                                    Content="X"
+                                    Background="Red"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,0,0"
+                                    Click="ClearSearch1_Click" />
+                                </Grid>
+                                <Grid Width="200" Height="30" Margin="0,0,0,5">
+                                    <!-- テキストボックス -->
+                                    <TextBox x:Name="SearchTextBox4"
+                                     Style="{StaticResource UnderlinedTextBoxStyle}"
+                                     VerticalAlignment="Center"
+                                     Width="200"
+                                     Margin="0,0,0,0"/>
+                                    <!-- クリアボタン -->
+                                    <Button x:Name="ClearSearch4"
+                                    Width="20" Height="20"
+                                    Content="X"
+                                    Background="Red"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Margin="0,0,0,0"
+                                    Click="ClearSearch1_Click" />
+                                </Grid>
                                 <Button Content="絞り込み"
                             Width="80" Height="25"
                             Style="{StaticResource MyFancyButtonStyle}"
@@ -265,11 +388,23 @@
                         BorderBrush="Gray"
                         BorderThickness="1"
                         Background="#FFFDF0">
-                            <StackPanel Orientation="Vertical" Margin="10">
+                            <StackPanel Orientation="Vertical" Margin="7,7,0,0">
 
                                 <!-- ▼▼ 1つ目の入力欄＋ボタン ▼▼ -->
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox x:Name="TagAddTextBox1" Width="170" Height="25" Margin="0,0,5,0"/>
+                                <StackPanel Orientation="Horizontal" Margin="2,10,0,5">
+                                    <Grid Width="170" Height="25" Margin="0,0,10,0">
+                                        <TextBox x:Name="TagAddTextBox1"
+                                        Style= "{StaticResource UnderlinedTextBoxStyle}" 
+                                        VerticalAlignment="Center"/>
+                                        <Button x:Name="TagAddClearButton1"
+                                        Width="20" Height="20"
+                                        Content="X"
+                                        Background="Red"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,0,0"
+                                        Click="TagAddClearButton1_Click"/>
+                                    </Grid>
                                     <Button x:Name="TagAddButton1"
                                     Content="追加"
                                     Width="45" Height="25"
@@ -278,8 +413,20 @@
                                 </StackPanel>
 
                                 <!-- ▼▼ 2つ目 ▼▼ -->
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox x:Name="TagAddTextBox2" Width="170" Height="25" Margin="0,0,5,0"/>
+                                <StackPanel Orientation="Horizontal" Margin="2,10,0,5">
+                                    <Grid Width="170" Height="25" Margin="0,0,10,0">
+                                        <TextBox x:Name="TagAddTextBox2"
+                                        Style= "{StaticResource UnderlinedTextBoxStyle}" 
+                                        VerticalAlignment="Center"/>
+                                        <Button x:Name="TagAddClearButton2"
+                                        Width="20" Height="20"
+                                        Content="X"
+                                        Background="Red"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,0,0"
+                                        Click="TagAddClearButton2_Click"/>
+                                    </Grid>
                                     <Button x:Name="TagAddButton2"
                                     Content="追加"
                                     Width="45" Height="25"
@@ -288,8 +435,20 @@
                                 </StackPanel>
 
                                 <!-- ▼▼ 3つ目 ▼▼ -->
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                                    <TextBox x:Name="TagAddTextBox3" Width="170" Height="25" Margin="0,0,5,0"/>
+                                <StackPanel Orientation="Horizontal" Margin="2,10,0,5">
+                                    <Grid Width="170" Height="25" Margin="0,0,10,0">
+                                        <TextBox x:Name="TagAddTextBox3"
+                                        Style= "{StaticResource UnderlinedTextBoxStyle}" 
+                                        VerticalAlignment="Center"/>
+                                        <Button x:Name="TagAddClearButton3"
+                                        Width="20" Height="20"
+                                        Content="X"
+                                        Background="Red"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,0,0"
+                                        Click="TagAddClearButton3_Click"/>
+                                    </Grid>
                                     <Button x:Name="TagAddButton3"
                                     Content="追加"
                                     Width="45" Height="25"
@@ -298,13 +457,47 @@
                                 </StackPanel>
 
                                 <!-- ▼▼ 4つ目 ▼▼ -->
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBox x:Name="TagAddTextBox4" Width="170" Height="25" Margin="0,0,5,0"/>
+                                <StackPanel Orientation="Horizontal" Margin="2,10,0,5">
+                                    <Grid Width="170" Height="25" Margin="0,0,10,0">
+                                        <TextBox x:Name="TagAddTextBox4"
+                                        Style= "{StaticResource UnderlinedTextBoxStyle}" 
+                                        VerticalAlignment="Center"/>
+                                        <Button x:Name="TagAddClearButton4"
+                                        Width="20" Height="20"
+                                        Content="X"
+                                        Background="Red"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,0,0"
+                                        Click="TagAddClearButton4_Click"/>
+                                    </Grid>
                                     <Button x:Name="TagAddButton4"
                                     Content="追加"
                                     Width="45" Height="25"
                                     Style="{StaticResource MyFancyButtonStyle}"
                                     Click="TagAddButton_Click4"/>
+                                </StackPanel>
+
+                                <!-- ▼▼ 5つ目 ▼▼ -->
+                                <StackPanel Orientation="Horizontal" Margin="2,10,0,5">
+                                    <Grid Width="170" Height="25" Margin="0,0,10,0">
+                                        <TextBox x:Name="TagAddTextBox5"
+                                        Style= "{StaticResource UnderlinedTextBoxStyle}" 
+                                        VerticalAlignment="Center"/>
+                                        <Button x:Name="TagAddClearButton5"
+                                        Width="20" Height="20"
+                                        Content="X"
+                                        Background="Red"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,0,0"
+                                        Click="TagAddClearButton5_Click"/>
+                                    </Grid>
+                                    <Button x:Name="TagAddButton5"
+                                    Content="追加"
+                                    Width="45" Height="25"
+                                    Style="{StaticResource MyFancyButtonStyle}"
+                                    Click="TagAddButton_Click5"/>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
